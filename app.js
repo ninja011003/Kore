@@ -9,7 +9,7 @@ const Chart = require('chart.js');
 const fs = require('fs');
 const moment = require('moment');
 require('chartjs-adapter-moment');
-var request = require('request');
+const request = require('request');
 
 
 //JashanSuthagar@05112012
