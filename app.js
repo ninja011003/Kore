@@ -169,7 +169,7 @@ server.get('/',(req,res)=>{
  * http://localhost:6969/bankPayment?bankName=bank_z&&payerAcNum=7898765434567845&&recipientAcNum=7834009890767845&&pin=1106&&Amount=200
  */
 server.get("/bankPayment", async (req, res) => {
-  try {
+  try {``
     const bank = req.query.bankName;
     var payer, recipient, query, R_database, R_collection;
     const P_database = client.db(bank); // Replace with your database name
