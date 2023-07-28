@@ -52,5 +52,5 @@ jobs:
         with:
           app-name: 'higgsbosonsKore'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_23F09C48814C4CAE9AC57CF0D16413B5 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_7A881597214B4338864971BDCB9B1E02 }}
           package: .
