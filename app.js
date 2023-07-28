@@ -14,7 +14,7 @@ require('chartjs-adapter-moment');
 
 //JashanSuthagar@05112012
 //22SWW3DF4I4QDAWY -  alphavantage api key
-const port = process.env.PORT || 6969;
+//const port = process.env.PORT || 6969;
 
 const server = express()
 server.use(bodyParser.json());
@@ -289,8 +289,8 @@ server.get("/getStockInfo", async (req, res) => {
 })
 
 
-server.listen(port, () => {
-  console.log(`server running on port ${port}`);
+server.listen(process.env.PORT || 3000, () => {
+  console.log(`server running `);
   try {
     // Connect the client to the server	(optional starting in v4.7)
     client.connect();
