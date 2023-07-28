@@ -1,7 +1,6 @@
 'use strict';
 const express = require('express')
 const { MongoClient, ServerApiVersion } = require('mongodb')
-const mongoose = require('mongoose')
 const path = require('path')
 const bodyParser = require('body-parser')
 const axios = require('axios');
