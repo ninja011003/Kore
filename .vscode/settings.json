@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "undefined/subscriptions/75d24866-3696-472e-91b4-31874a20670c/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/higgsbosonsKore",
+    "appService.deploySubpath": "."
+}
