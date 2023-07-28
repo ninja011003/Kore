@@ -159,6 +159,10 @@ async function getStockData(stockSymbol) {
   }
 }
 
+server.get('/',(req,res)=>{
+  res.send("node js file running");
+})
+
 
 /**
  * To check for working....
