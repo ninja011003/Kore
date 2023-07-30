@@ -1,8 +1,8 @@
 'use strict';
-const express = require('express')
-const { MongoClient, ServerApiVersion } = require('mongodb')
+const express = require('express');
+const { MongoClient, ServerApiVersion } = require('mongodb');
 //const path = require('path')
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
 const axios = require('axios');
 //const { createCanvas, Image } = require('canvas');
 //const Chart = require('chart.js');
