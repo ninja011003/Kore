@@ -96,6 +96,7 @@ async function getStockAnalysis(stockSymbol) {
       chartData.push([formatDate(new Date(finalData[i]['Date'])), finalData[i]['Adj Close']]);
       //console.log(indexes[i]+":"+ dates[i] + " : " + finalData[i]['Adj Close']);
     }
+    
     //console.log(chartData);
     // // Convert the timestamps to formatted dates
     // const formattedDates = dates.map((timestamp) => moment(timestamp).format('YYYY-MM-DD'));
@@ -112,7 +113,7 @@ async function getStockAnalysis(stockSymbol) {
       executablePath: process.env.NODE_ENV ==='production' ? process.env.PUPPETEER_EXECUTABLE_PATH : puppeteer.executablePath(),
     });
     const page = await browser.newPage();
-
+    // await page.setDefaultNavigationTimeout(60000);
     // Generate the HTML content for the Google Chart
     const chartHtml = `
       <html>
@@ -144,11 +145,13 @@ async function getStockAnalysis(stockSymbol) {
         </body>
       </html>
     `;
-
+     console.log(chartData);
     // Set the content and generate a screenshot
     await page.setContent(chartHtml);
+    
     // await page.waitForNavigation({ waitUntil: 'domcontentloaded' });
     // await page.setDefaultTimeout(2000);
+    // await page.waitForNavigation({ waitUntil: 'domcontentloaded' });
  // Wait for the chart to render (you can adjust the wait time if needed)
     const screenshot = await page.screenshot({ encoding: 'binary' });
             
