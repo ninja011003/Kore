@@ -145,7 +145,6 @@ async function getStockAnalysis(stockSymbol) {
         </body>
       </html>
     `;
-     console.log(chartData);
     // Set the content and generate a screenshot
     await page.setContent(chartHtml);
     
