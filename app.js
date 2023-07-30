@@ -22,13 +22,13 @@ const server = express()
 server.use(bodyParser.json());
 server.use(express.urlencoded({ extended: true, parameterLimit: 10000, parseArrays: true }))
 const uri = 'mongodb+srv://harishbhalaa:harishninja@cluster0.0ap9ule.mongodb.net/?retryWrites=true&w=majority'; // Replace with your MongoDB connection string
-// const client = new MongoClient(uri, {
-//   serverApi: {
-//     version: ServerApiVersion.v1,
-//     strict: true,
-//     deprecationErrors: true,
-//   }
-// });
+const client = new MongoClient(uri, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  }
+});
 
 
 function formatDate(date) {
@@ -100,7 +100,7 @@ async function getStockAnalysis(stockSymbol) {
     // const formattedDates = dates.map((timestamp) => moment(timestamp).format('YYYY-MM-DD'));
    
     // Launch a headless browser using puppeteer
-    const browser = await puppeteer.launch({ headless: 'new' });
+    const browser = await puppeteer.launch({ headless: 'new',executablePath: process.env.PUPPETEER_EXECUTABLE_PATH, });
     const page = await browser.newPage();
 
     // Generate the HTML content for the Google Chart
