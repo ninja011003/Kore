@@ -4,11 +4,13 @@ const { MongoClient, ServerApiVersion } = require('mongodb');
 //const path = require('path')
 const bodyParser = require('body-parser');
 const axios = require('axios');
+const puppeteer = require('puppeteer')
 //const { createCanvas, Image } = require('canvas');
 //const Chart = require('chart.js');
 //const fs = require('fs');
 //const moment = require('moment');
-require('chartjs-adapter-moment');
+// require('chartjs-adapter-moment');
+
 
 
 
@@ -57,81 +59,97 @@ async function getStockSymbol(stockName) {
     return "";
   }
 }
-// async function getStockAnalysis(stockSymbol) {
-//   const today = new Date();
-//   const lastMonth = new Date(today);
-//   lastMonth.setMonth(lastMonth.getMonth() - 1);
+async function getStockAnalysis(stockSymbol) {
+  const today = new Date();
+  const lastMonth = new Date(today);
+  lastMonth.setMonth(lastMonth.getMonth() - 1);
 
-//   const encodedParams = new URLSearchParams();
-//   encodedParams.set('symbol', stockSymbol);
-//   encodedParams.set('end', formatDate(today));
-//   encodedParams.set('start', formatDate(lastMonth));
+  const encodedParams = new URLSearchParams();
+  encodedParams.set('symbol', stockSymbol);
+  encodedParams.set('end', formatDate(today));
+  encodedParams.set('start', formatDate(lastMonth));
 
-//   const options = {
-//     method: 'POST',
-//     url: 'https://yfinance-stock-market-data.p.rapidapi.com/price-customdate',
-//     headers: {
-//       'content-type': 'application/x-www-form-urlencoded',
-//       'X-RapidAPI-Key': '2179808fd1msh04d9b9f1e7bdb1ep16ca8cjsn758d66e63226',
-//       'X-RapidAPI-Host': 'yfinance-stock-market-data.p.rapidapi.com'
-//     },
-//     data: encodedParams,
-//   };
+  const options = {
+    method: 'POST',
+    url: 'https://yfinance-stock-market-data.p.rapidapi.com/price-customdate',
+    headers: {
+      'content-type': 'application/x-www-form-urlencoded',
+      'X-RapidAPI-Key': '2179808fd1msh04d9b9f1e7bdb1ep16ca8cjsn758d66e63226',
+      'X-RapidAPI-Host': 'yfinance-stock-market-data.p.rapidapi.com'
+    },
+    data: encodedParams,
+  };
 
-//   try {
-//     const response = await axios.request(options);
-//     const finalData = response.data.data;
-//     //console.log(response);
-//     var indexes = [];
-//     var dates = [];
-//     var prices = [];
-//     for (var i = 0; i < finalData.length; i++) {
-//       indexes.push(i);
-//       prices.push(finalData[i]['Adj Close']);
-//       dates.push(new Date(finalData[i]['Date']))
-//       //console.log(indexes[i]+":"+ dates[i] + " : " + finalData[i]['Adj Close']);
-//     }
-//     const canvas = createCanvas(800, 600);
-//     const ctx = canvas.getContext('2d');
-//     Chart.Chart.register(Chart.LinearScale, Chart.LineController, Chart.PointElement, Chart.LineElement, Chart.TimeScale);
+  try {
+    const response = await axios.request(options);
+    const finalData = response.data.data;
+    //console.log(response);
+    var indexes = [];
+    var dates = [];
+    var prices = [];
+    const chartData = [['Time', 'Price']];
+    for (var i = 0; i < finalData.length; i++) {
+      indexes.push(i);
+      prices.push(finalData[i]['Adj Close']);
+      dates.push(new Date(finalData[i]['Date']))
+      chartData.push([formatDate(new Date(finalData[i]['Date'])), finalData[i]['Adj Close']]);
+      //console.log(indexes[i]+":"+ dates[i] + " : " + finalData[i]['Adj Close']);
+    }
+    //console.log(chartData);
+    // // Convert the timestamps to formatted dates
+    // const formattedDates = dates.map((timestamp) => moment(timestamp).format('YYYY-MM-DD'));
+   
+    // Launch a headless browser using puppeteer
+    const browser = await puppeteer.launch({ headless: 'new' });
+    const page = await browser.newPage();
 
-//     // Convert the timestamps to formatted dates
-//     const formattedDates = dates.map((timestamp) => moment(timestamp).format('YYYY-MM-DD'));
+    // Generate the HTML content for the Google Chart
+    const chartHtml = `
+      <html>
+        <head>
+          <!-- Load the Google Charts library -->
+          <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+          <script type="text/javascript">
+            google.charts.load('current', {'packages':['corechart']});
+            google.charts.setOnLoadCallback(drawChart);
 
-//     // Create a new Chart instance
-//     new Chart.Chart(ctx, {
-//       type: 'line',
-//       data: {
-//         labels: formattedDates,
-//         datasets: [
-//           {
-//             label: 'Prices',
-//             data: prices,
-//             borderColor: 'rgba(75, 192, 192, 1)',
-//             borderWidth: 2,
-//             fill: false,
-//           },
-//         ],
-//       },
-//       options: {
-//         scales: {
-//           x: {
-//             type: 'time', // Use 'time' scale for the x-axis with timeseries data
-//             time: {
-//               unit: 'day', // Set the time unit (e.g., 'day', 'month', 'year')
-//             },
-//           },
-//           y: {
-//             beginAtZero: false,
-//           },
-//         },
-//       },
-//     });
-//     return canvas.toBuffer();
-//   } catch (error) {
-//     console.error(error);
-//   }
-// }
+            function drawChart() {
+              var data = google.visualization.arrayToDataTable(${JSON.stringify(chartData)});
+
+              var options = {
+                title: 'STOCK ANALYSIS',
+                width: 800,
+                height: 600,
+                curveType: 'none', // Set to 'none' to disable curves
+              };
+
+              var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+              chart.draw(data, options);
+            }
+          </script>
+        </head>
+        <body>
+          <!-- Placeholder for the Google Chart -->
+          <div id="chart_div"></div>
+        </body>
+      </html>
+    `;
+
+    // Set the content and generate a screenshot
+    await page.setContent(chartHtml);
+    await page.setDefaultTimeout(2000);
+ // Wait for the chart to render (you can adjust the wait time if needed)
+    const screenshot = await page.screenshot({ encoding: 'binary' });
+            
+    // Close the browser
+    await browser.close();
+
+    return screenshot;
+  } catch (error) {
+    console.error('Error while creating the Google Line chart:', error);
+    return null;
+  }
+}
 
 async function getStockData(stockSymbol) {
   try {
@@ -255,21 +273,21 @@ server.get("/checkBalance", async (req, res) => {
   }
 })
 
-// /**
-//  * To check for working...
-//  * http://localhost:6969/getStockGraph?stockName=apple 
-//  */
-// server.get('/getStockGraph', async (req, res) => {
+/**
+ * To check for working...
+ * http://localhost:6969/getStockGraph?stockName=apple 
+ */
+server.get('/getStockGraph', async (req, res) => {
 
-//   var symbol = await getStockSymbol(req.query.stockName);
-//   if (symbol.length != 0) {
-//     res.setHeader('Content-Type', 'image/png');
-//     res.send(await getStockAnalysis(symbol));
-//   }
-//   else {
-//     res.status(500).json({ 'symbol': 'No stock found' });
-//   }
-// })
+  var symbol = await getStockSymbol(req.query.stockName);
+  if (symbol.length != 0) {
+    res.setHeader('Content-Type', 'image/png');
+    res.send(await getStockAnalysis(symbol));
+  }
+  else {
+    res.status(500).json({ 'symbol': 'No stock found' });
+  }
+})
 
 
 
