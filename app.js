@@ -1,4 +1,5 @@
 'use strict';
+require('dotenv').config();
 const express = require('express');
 const { MongoClient, ServerApiVersion } = require('mongodb');
 //const path = require('path')
@@ -100,7 +101,16 @@ async function getStockAnalysis(stockSymbol) {
     // const formattedDates = dates.map((timestamp) => moment(timestamp).format('YYYY-MM-DD'));
    
     // Launch a headless browser using puppeteer
-    const browser = await puppeteer.launch({ headless: 'new',executablePath: process.env.PUPPETEER_EXECUTABLE_PATH, });
+    const browser = await puppeteer.launch({ 
+      headless: 'new',
+      args: [
+        "--disable-setuid-sandbox",
+        "--no-sandbox",
+        "--single-process",
+        "--no-zygote",
+      ],
+      executablePath: process.env.NODE_ENV ==='production' ? process.env.PUPPETEER_EXECUTABLE_PATH : puppeteer.executablePath(),
+    });
     const page = await browser.newPage();
 
     // Generate the HTML content for the Google Chart
