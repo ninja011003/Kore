@@ -22,13 +22,13 @@ const server = express()
 server.use(bodyParser.json());
 server.use(express.urlencoded({ extended: true, parameterLimit: 10000, parseArrays: true }))
 const uri = 'mongodb+srv://harishbhalaa:harishninja@cluster0.0ap9ule.mongodb.net/?retryWrites=true&w=majority'; // Replace with your MongoDB connection string
-const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  }
-});
+// const client = new MongoClient(uri, {
+//   serverApi: {
+//     version: ServerApiVersion.v1,
+//     strict: true,
+//     deprecationErrors: true,
+//   }
+// });
 
 
 function formatDate(date) {
@@ -150,7 +150,6 @@ async function getStockAnalysis(stockSymbol) {
     return null;
   }
 }
-
 async function getStockData(stockSymbol) {
   try {
     const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${stockSymbol}&apikey=22SWW3DF4I4QDAWY`;
@@ -179,8 +178,6 @@ async function getStockData(stockSymbol) {
 server.get('/',(req,res)=>{
   res.send("node js file running");
 })
-
-
 /**
  * To check for working....
  * http://localhost:6969/bankPayment?bankName=bank_z&&payerAcNum=7898765434567845&&recipientAcNum=7834009890767845&&pin=1106&&Amount=200
@@ -237,7 +234,6 @@ server.get("/bankPayment", async (req, res) => {
     console.log(err)
   }
 })
-
 /**
  *  To check for working.... 
  *  http://localhost:6969/checkBalance?AcNum=7898765434567845&&pin=1106
@@ -272,13 +268,11 @@ server.get("/checkBalance", async (req, res) => {
     console.error('Error retrieving data:', err);
   }
 })
-
 /**
  * To check for working...
  * http://localhost:6969/getStockGraph?stockName=apple 
  */
 server.get('/getStockGraph', async (req, res) => {
-
   var symbol = await getStockSymbol(req.query.stockName);
   if (symbol.length != 0) {
     res.setHeader('Content-Type', 'image/png');
@@ -288,10 +282,6 @@ server.get('/getStockGraph', async (req, res) => {
     res.status(500).json({ 'symbol': 'No stock found' });
   }
 })
-
-
-
-
 /**
  * To check for working...
  * http://localhost:6969/getStockInfo?stockName=apple 
@@ -305,8 +295,6 @@ server.get("/getStockInfo", async (req, res) => {
     res.status(500).json({ 'symbol': 'No stock found' });
   }
 })
-
-
 server.listen(process.env.PORT || 3000, () => {
   console.log(`server running `);
   try {
