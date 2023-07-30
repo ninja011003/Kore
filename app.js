@@ -147,8 +147,8 @@ async function getStockAnalysis(stockSymbol) {
 
     // Set the content and generate a screenshot
     await page.setContent(chartHtml);
-    await page.waitForEvent('domcontentloaded');
-    await page.setDefaultTimeout(2000);
+    // await page.waitForNavigation({ waitUntil: 'domcontentloaded' });
+    // await page.setDefaultTimeout(2000);
  // Wait for the chart to render (you can adjust the wait time if needed)
     const screenshot = await page.screenshot({ encoding: 'binary' });
             
