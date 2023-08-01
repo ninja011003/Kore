@@ -146,8 +146,8 @@ async function getStockAnalysis(stockSymbol) {
       </html>
     `;
     // Set the content and generate a screenshot
-    await page.setContent(chartHtml);
     
+    await page.setContent(chartHtml);
     // await page.waitForNavigation({ waitUntil: 'domcontentloaded' });
     // await page.setDefaultTimeout(2000);
     // await page.waitForNavigation({ waitUntil: 'domcontentloaded' });
@@ -285,16 +285,16 @@ server.get("/checkBalance", async (req, res) => {
  * To check for working...
  * http://localhost:6969/getStockGraph?stockName=apple 
  */
-server.get('/getStockGraph', async (req, res) => {
-  var symbol = await getStockSymbol(req.query.stockName);
-  if (symbol.length != 0) {
-    res.setHeader('Content-Type', 'image/png');
-    res.send(await getStockAnalysis(symbol));
-  }
-  else {
-    res.status(500).json({ 'symbol': 'No stock found' });
-  }
-})
+// server.get('/getStockGraph', async (req, res) => {
+//   var symbol = await getStockSymbol(req.query.stockName);
+//   if (symbol.length != 0) {
+//     res.setHeader('Content-Type', 'image/png');
+//     res.send(await getStockAnalysis(symbol));
+//   }
+//   else {
+//     res.status(500).json({ 'symbol': 'No stock found' });
+//   }
+// })
 /**
  * To check for working...
  * http://localhost:6969/getStockInfo?stockName=apple 
