@@ -50,6 +50,7 @@ async function getStockSymbol(stockName) {
     }
 
     const data = response.data;
+    console.log(data);
     if (data && data.bestMatches && data.bestMatches.length > 0) {
       return data.bestMatches[0]['1. symbol'];
     } else {
